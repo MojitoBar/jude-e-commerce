@@ -4,3 +4,12 @@
 
 # Data 디렉토리
 data/
+
+db_data
+
+.DS_Store
+.env
+
+airflow/logs/dag_processor_manager/dag_processor_manager.log
+
+airflow/logs/scheduler/2024-12-06/etl_pipeline_dag.py.log
