@@ -1,0 +1,73 @@
+[2024-12-06T11:20:43.169+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_pipeline_dag.run_etl_pipeline manual__2024-12-06T11:20:41.465721+00:00 [queued]>
+[2024-12-06T11:20:43.173+0000] {taskinstance.py:1103} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_pipeline_dag.run_etl_pipeline manual__2024-12-06T11:20:41.465721+00:00 [queued]>
+[2024-12-06T11:20:43.173+0000] {taskinstance.py:1308} INFO - Starting attempt 1 of 2
+[2024-12-06T11:20:43.179+0000] {taskinstance.py:1327} INFO - Executing <Task(PythonOperator): run_etl_pipeline> on 2024-12-06 11:20:41.465721+00:00
+[2024-12-06T11:20:43.181+0000] {standard_task_runner.py:57} INFO - Started process 185 to run task
+[2024-12-06T11:20:43.184+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'etl_pipeline_dag', 'run_etl_pipeline', 'manual__2024-12-06T11:20:41.465721+00:00', '--job-id', '10', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline_dag.py', '--cfg-path', '/tmp/tmpghqy414u']
+[2024-12-06T11:20:43.185+0000] {standard_task_runner.py:85} INFO - Job 10: Subtask run_etl_pipeline
+[2024-12-06T11:20:43.214+0000] {task_command.py:410} INFO - Running <TaskInstance: etl_pipeline_dag.run_etl_pipeline manual__2024-12-06T11:20:41.465721+00:00 [running]> on host 63eb97eb2a3a
+[2024-12-06T11:20:43.265+0000] {taskinstance.py:1547} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_pipeline_dag' AIRFLOW_CTX_TASK_ID='run_etl_pipeline' AIRFLOW_CTX_EXECUTION_DATE='2024-12-06T11:20:41.465721+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-12-06T11:20:41.465721+00:00'
+[2024-12-06T11:20:43.266+0000] {logging_mixin.py:150} INFO - Starting ETL pipeline...
+[2024-12-06T11:20:43.266+0000] {logging_mixin.py:150} INFO - Extracting data...
+[2024-12-06T11:20:43.272+0000] {taskinstance.py:1824} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1911, in _execute_context
+    cursor, statement, parameters, context
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.SyntaxError: syntax error at or near "order"
+LINE 1: SELECT * FROM order
+                      ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/operators/python.py", line 181, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/operators/python.py", line 198, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/../scripts/etl_pipeline.py", line 81, in run_etl_script
+    orders, order_items, products, customers = extract_data()
+  File "/opt/airflow/dags/../scripts/etl_pipeline.py", line 21, in extract_data
+    orders = pd.read_sql(orders_query, engine)
+  File "/home/airflow/.local/lib/python3.7/site-packages/pandas/io/sql.py", line 634, in read_sql
+    chunksize=chunksize,
+  File "/home/airflow/.local/lib/python3.7/site-packages/pandas/io/sql.py", line 1579, in read_query
+    result = self.execute(*args)
+  File "/home/airflow/.local/lib/python3.7/site-packages/pandas/io/sql.py", line 1424, in execute
+    return self.connectable.execution_options().execute(*args, **kwargs)
+  File "<string>", line 2, in execute
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/util/deprecations.py", line 468, in warned
+    return fn(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 3267, in execute
+    return connection.execute(statement, *multiparams, **params)
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1375, in execute
+    future=False,
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1681, in _exec_driver_sql
+    distilled_parameters,
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1954, in _execute_context
+    e, statement, parameters, cursor, context
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 2135, in _handle_dbapi_exception
+    sqlalchemy_exception, with_traceback=exc_info[2], from_=e
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/base.py", line 1911, in _execute_context
+    cursor, statement, parameters, context
+  File "/home/airflow/.local/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.SyntaxError) syntax error at or near "order"
+LINE 1: SELECT * FROM order
+                      ^
+
+[SQL: SELECT * FROM order]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+[2024-12-06T11:20:43.278+0000] {taskinstance.py:1350} INFO - Marking task as UP_FOR_RETRY. dag_id=etl_pipeline_dag, task_id=run_etl_pipeline, execution_date=20241206T112041, start_date=20241206T112043, end_date=20241206T112043
+[2024-12-06T11:20:43.285+0000] {standard_task_runner.py:109} ERROR - Failed to execute job 10 for task run_etl_pipeline ((psycopg2.errors.SyntaxError) syntax error at or near "order"
+LINE 1: SELECT * FROM order
+                      ^
+
+[SQL: SELECT * FROM order]
+(Background on this error at: https://sqlalche.me/e/14/f405); 185)
+[2024-12-06T11:20:43.324+0000] {local_task_job_runner.py:225} INFO - Task exited with return code 1
+[2024-12-06T11:20:43.334+0000] {taskinstance.py:2653} INFO - 0 downstream tasks scheduled from follow-on schedule check
