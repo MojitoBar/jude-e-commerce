@@ -11,3 +11,26 @@ db_data
 .env
 
 airflow/logs/dag_processor_manager/dag_processor_manager.log
+
+# Python 관련
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env/
+.venv/
+
+# IDE 관련
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Airflow 추가 설정
+airflow/logs/*
+airflow/*.pid
+airflow/*.err
+airflow/*.out
