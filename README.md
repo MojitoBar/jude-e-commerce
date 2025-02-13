@@ -21,21 +21,20 @@
 
 ## 🎯 프로젝트 구조
 
-### ETL 파이프라인
-```python
-def transform_data(orders, order_items, products, customers):
-    """
-    주문, 상품, 고객 데이터를 통합하여 분석용 데이터셋 생성
-    """
-    enriched_data = (
-        order_items
-        .merge(orders, on="invoice_no")
-        .merge(products, on="stock_code")
-        .merge(customers, on="customer_id")
-    )
-    
-    return enriched_data
+### **시스템 아키텍처**
+
 ```
+[Data Source] → [Airflow ETL] → [PostgreSQL] → [Metabase]
+     ↓              ↓              ↓              ↓
+   Raw Data     Data Pipeline    Storage     Visualization
+```
+
+### ETL 파이프라인
+- 일일 배치 작업으로 데이터 처리
+- 데이터 정제 및 집계
+- 테이블:
+  - enriched_data: 상세 거래 데이터
+  - summarized_data: 고객별 요약 데이터
 
 ### 데이터 분석
 - 고객 세그먼테이션
