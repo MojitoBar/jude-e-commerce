@@ -1,0 +1,39 @@
+[2025-02-14T06:45:02.157+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2025-02-14T06:45:02.175+0000] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_pipeline_dag.run_etl_pipeline manual__2025-02-14T06:45:00.438126+00:00 [queued]>
+[2025-02-14T06:45:02.184+0000] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_pipeline_dag.run_etl_pipeline manual__2025-02-14T06:45:00.438126+00:00 [queued]>
+[2025-02-14T06:45:02.185+0000] {taskinstance.py:2867} INFO - Starting attempt 1 of 2
+[2025-02-14T06:45:02.202+0000] {taskinstance.py:2890} INFO - Executing <Task(PythonOperator): run_etl_pipeline> on 2025-02-14 06:45:00.438126+00:00
+[2025-02-14T06:45:02.216+0000] {standard_task_runner.py:104} INFO - Running: ['***', 'tasks', 'run', 'etl_pipeline_dag', 'run_etl_pipeline', 'manual__2025-02-14T06:45:00.438126+00:00', '--job-id', '2', '--raw', '--subdir', 'DAGS_FOLDER/etl_pipeline_dag.py', '--cfg-path', '/tmp/tmpgcj_unqg']
+[2025-02-14T06:45:02.219+0000] {logging_mixin.py:190} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:70 DeprecationWarning: This process (pid=205) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-02-14T06:45:02.220+0000] {standard_task_runner.py:105} INFO - Job 2: Subtask run_etl_pipeline
+[2025-02-14T06:45:02.221+0000] {standard_task_runner.py:72} INFO - Started process 211 to run task
+[2025-02-14T06:45:02.281+0000] {task_command.py:467} INFO - Running <TaskInstance: etl_pipeline_dag.run_etl_pipeline manual__2025-02-14T06:45:00.438126+00:00 [running]> on host f6fcc891b4f2
+[2025-02-14T06:45:02.353+0000] {taskinstance.py:3134} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_pipeline_dag' AIRFLOW_CTX_TASK_ID='run_etl_pipeline' AIRFLOW_CTX_EXECUTION_DATE='2025-02-14T06:45:00.438126+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-02-14T06:45:00.438126+00:00'
+[2025-02-14T06:45:02.353+0000] {taskinstance.py:732} INFO - ::endgroup::
+[2025-02-14T06:45:02.368+0000] {logging_mixin.py:190} INFO - Starting ETL pipeline...
+[2025-02-14T06:45:02.369+0000] {logging_mixin.py:190} INFO - Extracting data...
+[2025-02-14T06:45:02.369+0000] {logging_mixin.py:190} INFO - File can be opened for reading
+[2025-02-14T06:47:08.029+0000] {logging_mixin.py:190} INFO - Detected file encoding: ISO-8859-1
+[2025-02-14T06:47:08.550+0000] {logging_mixin.py:190} INFO - CSV 파일 컬럼: ['InvoiceNo', 'StockCode', 'Description', 'Quantity', 'InvoiceDate', 'UnitPrice', 'CustomerID', 'Country']
+[2025-02-14T06:47:08.551+0000] {logging_mixin.py:190} INFO - 데이터 샘플:
+[2025-02-14T06:47:08.563+0000] {logging_mixin.py:190} INFO -    InvoiceNo StockCode  ... CustomerID         Country
+0    536365    85123A  ...    17850.0  United Kingdom
+1    536365     71053  ...    17850.0  United Kingdom
+2    536365    84406B  ...    17850.0  United Kingdom
+3    536365    84029G  ...    17850.0  United Kingdom
+4    536365    84029E  ...    17850.0  United Kingdom
+
+[5 rows x 8 columns]
+[2025-02-14T06:47:08.563+0000] {logging_mixin.py:190} INFO - Data extracted successfully!
+[2025-02-14T06:47:08.564+0000] {logging_mixin.py:190} INFO - Transforming data...
+[2025-02-14T06:47:08.564+0000] {logging_mixin.py:190} INFO - 변환 전 컬럼: ['InvoiceNo', 'StockCode', 'Description', 'Quantity', 'InvoiceDate', 'UnitPrice', 'CustomerID', 'Country']
+[2025-02-14T06:47:08.822+0000] {logging_mixin.py:190} INFO - Data transformed successfully!
+[2025-02-14T06:47:08.822+0000] {logging_mixin.py:190} INFO - Loading data...
+[2025-02-14T06:47:27.459+0000] {logging_mixin.py:190} INFO - Data loaded successfully!
+[2025-02-14T06:47:27.461+0000] {logging_mixin.py:190} INFO - ETL pipeline completed successfully!
+[2025-02-14T06:47:27.517+0000] {python.py:240} INFO - Done. Returned value was: None
+[2025-02-14T06:47:27.530+0000] {taskinstance.py:341} INFO - ::group::Post task execution logs
+[2025-02-14T06:47:27.531+0000] {taskinstance.py:353} INFO - Marking task as SUCCESS. dag_id=etl_pipeline_dag, task_id=run_etl_pipeline, run_id=manual__2025-02-14T06:45:00.438126+00:00, execution_date=20250214T064500, start_date=20250214T064502, end_date=20250214T064727
+[2025-02-14T06:47:27.604+0000] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2025-02-14T06:47:27.636+0000] {taskinstance.py:3901} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-02-14T06:47:27.637+0000] {local_task_job_runner.py:245} INFO - ::endgroup::

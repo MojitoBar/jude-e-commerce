@@ -1,110 +1,116 @@
-# E-Commerce Data Analysis Project
+# 🛍 E-Commerce 데이터 파이프라인 & 분석 대시보드
 
-## **프로젝트 개요**
+## 💡 프로젝트 소개
 
-이 프로젝트는 전자상거래 데이터를 분석 가능한 형태로 정제하고 저장하기 위한 데이터 엔지니어링 파이프라인을 구축하는 것을 목표로 합니다.
+전자상거래 거래 데이터를 ETL 파이프라인으로 처리하고 Metabase를 통해 "360° Sales & Customer Insights" 대시보드를 구축했습니다. 매출, 고객, 상품 데이터를 자동으로 처리하고 시각화하여 데이터 기반 의사결정을 지원합니다.
 
-Python, PostgreSQL, Docker, 그리고 Airflow를 활용하여 데이터 파이프라인을 자동화하고, 주기적으로 데이터를 가공하여 분석 테이블을 생성합니다.
+## 🔧 기술 스택
 
----
+### Data Pipeline
+- **Apache Airflow**: 워크플로우 관리 및 스케줄링
+- **Python & Pandas**: 데이터 처리 및 분석
+- **SQLAlchemy**: ORM을 통한 데이터베이스 연동
+- **chardet**: 파일 인코딩 자동 감지
 
-## **폴더 구조**
+### Infrastructure
+- **Docker Compose**: 컨테이너 기반 인프라 구축
+- **PostgreSQL**: 데이터 저장 및 관리
+- **Metabase**: 데이터 시각화 및 대시보드
 
-```bash
-ecommerce-data-analysis/
-├── airflow/                 # Airflow 관련 파일 및 설정
-│   ├── dags/                # Airflow DAG 파일
+## 🎯 프로젝트 구조
+
+### 디렉토리 구조
+````
+project/
+├── airflow/
+│   ├── dags/
 │   │   └── etl_pipeline_dag.py
-│   ├── logs/                # Airflow 로그 파일
-│   ├── airflow.cfg          # Airflow 설정 파일
-│   └── scripts/             # ETL 파이프라인 스크립트
+│   └── scripts/
 │       └── etl_pipeline.py
-├── data/                    # 데이터 폴더
-│   └── data.csv             # 원시 데이터
-├── db_data/                 # PostgreSQL 데이터 폴더 (Docker에서 생성)
-├── docker-compose.yml       # Docker 구성 파일
-├── scripts/                 # Python 스크립트 폴더
-│   ├── create_tables.sql    # 데이터베이스 테이블 생성 스크립트
-│   └── load_data.py         # 초기 데이터 적재 스크립트
-└── README.md                # 프로젝트 설명 파일
-```
+├── data/
+│   └── data.csv
+├── init-scripts/
+│   └── init-db.sql
+├── .env
+├── docker-compose.yaml
+└── README.md
+````
 
----
 
-## **진행된 내용**
+### 시스템 아키텍처
+````
+[CSV Data] → [Airflow ETL] → [PostgreSQL] → [Metabase Dashboard]
+    ↓             ↓              ↓                ↓
+Raw Data    Data Processing    Storage     "360° Sales Insights"
+````
 
-### 1. **프로젝트 초기 설정**
 
-- **환경 구성**:
-    - Docker를 이용해 PostgreSQL과 Airflow 컨테이너 설정.
-    - Python, Pandas, SQLAlchemy 등 필수 패키지 설치 및 테스트 완료.
-- **데이터셋 준비**:
-    - `data.csv` 파일을 `data/` 디렉토리에 저장.
-    - 이 데이터는 전자상거래의 주문 데이터를 포함합니다.
-- **GitHub 레포지토리 생성**:
-    - 디렉토리 구조 설정 및 `README.md`와 `requirements.txt` 파일 생성.
+## 📊 데이터베이스 스키마
 
----
+### sales 테이블
+````sql
+CREATE TABLE IF NOT EXISTS sales (
+    id SERIAL PRIMARY KEY,
+    invoice_no VARCHAR(50),
+    stock_code VARCHAR(50),
+    product_name VARCHAR(255),
+    quantity INTEGER,
+    date TIMESTAMP,
+    price DECIMAL(10,2),
+    customer_id INTEGER,
+    country VARCHAR(100),
+    total_amount DECIMAL(10,2)
+);
+````
 
-### 2. **데이터 수집 및 데이터베이스 설계**
 
-- **테이블 설계 및 생성**:
-    - `create_tables.sql` 스크립트를 통해 PostgreSQL에 테이블 생성:
-        - `orders`, `order_items`, `products`, `customers`.
-- **데이터 로딩**:
-    - `load_data.py`를 실행하여 `data.csv` 데이터를 PostgreSQL 테이블에 적재.
-- **SQL 쿼리 테스트**:
-    - 데이터 조회 및 검증을 통해 적재된 데이터 확인 완료.
+### customer_summary 테이블
+````sql
+CREATE TABLE IF NOT EXISTS customer_summary (
+    customer_id INTEGER PRIMARY KEY,
+    total_purchase_amount DECIMAL(10,2),
+    total_orders INTEGER,
+    total_items INTEGER
+);
+````
 
----
 
-### 3. **데이터 분석 파이프라인 구축**
+## 🌟 주요 기능
 
-- **ETL 파이프라인 설계**:
-    - Python 기반 `etl_pipeline.py` 스크립트를 작성:
-        - **Extract**: PostgreSQL에서 원시 데이터 읽기.
-        - **Transform**: Pandas로 데이터 정제 및 가공.
-        - **Load**: 변환된 데이터를 PostgreSQL의 새로운 테이블로 저장.
-- **Airflow DAG 생성**:
-    - `etl_pipeline_dag.py`를 작성하여 ETL 작업을 Airflow에서 실행.
-- **Airflow 테스트**:
-    - Airflow 웹 UI에서 DAG 실행 테스트 완료.
+### 1. ETL 파이프라인
+- CSV 파일 자동 인코딩 감지 및 데이터 추출
+- 데이터 정제 및 표준화
+- 고객별 구매 요약 데이터 생성
 
----
+### 2. "360° Sales & Customer Insights" 대시보드
+- 일별 매출 추이 (라인 차트)
+- 국가별 매출 분포 (지도)
+- 고객 세그먼트 분포 (도넛 차트)
+- 시간대별 주문 패턴 (바 차트)
+- 상위 판매 제품 (수평 바 차트)
+- 월별 매출 및 성장률 (복합 차트)
 
-## **앞으로 해야 할 일**
+![Image](https://github.com/user-attachments/assets/90f6e304-55e5-493f-b2e4-f7d9f213bc9e)
 
-### 1. **분석 및 시각화**
+## 🚀 주요 성과
 
-- ETL 파이프라인으로 생성된 `enriched_data`와 `summarized_data` 테이블을 분석.
-- Tableau, Power BI, 또는 Python(Matplotlib/Seaborn)을 이용해 데이터를 시각화.
+- ETL 파이프라인 자동화 구현
+- Docker 기반의 안정적인 실행 환경 구성
+- PostgreSQL과 Metabase를 활용한 분석 환경 구축
+- 데이터 파일 인코딩 문제 해결로 안정성 향상
+- 실시간 데이터 모니터링 환경 구축
 
-### 2. **ETL 성능 최적화**
+## 🎓 학습 내용
 
-- 대규모 데이터에 대비해 ETL 성능을 점검하고 최적화.
-- 필요한 경우 Airflow 작업 병렬 처리(Task Dependency) 설정.
+이 프로젝트를 통해 다음과 같은 기술을 실전에서 적용했습니다:
+- ETL 파이프라인 설계 및 구현
+- Docker를 활용한 컨테이너 기반 개발
+- 데이터베이스 모델링 및 쿼리 작성
+- 데이터 시각화 및 대시보드 구축
 
-### 3. **문서화 및 발표 준비**
+## 📝 회고
 
-- 프로젝트의 전체 과정, 구조, 문제 해결 방식을 상세히 문서화.
-- 최종 결과를 발표할 때 활용할 슬라이드 준비.
+이 프로젝트를 통해 데이터 엔지니어링의 전체 프로세스를 경험할 수 있었습니다. 특히 파일 인코딩, 데이터베이스 연결, 권한 관리 등 실제 프로젝트에서 발생할 수 있는 다양한 문제들을 해결하면서 많은 것을 배웠습니다. 앞으로도 데이터 품질과 시스템 안정성을 고려한 데이터 파이프라인 구축에 대해 더 깊이 공부하고 싶습니다.
 
----
-
-## **사용된 기술 스택**
-
-- **Python**: 데이터 처리 및 ETL 파이프라인 작성.
-- **PostgreSQL**: 데이터베이스 설계 및 데이터 저장.
-- **Airflow**: 데이터 파이프라인 스케줄링 및 자동화.
-- **Docker**: 컨테이너 기반 환경 설정.
-- **Pandas & SQLAlchemy**: 데이터 변환 및 데이터베이스 연결.
-
----
-
-## **DAG 구성**
-
-현재 구성된 DAG의 이름과 역할:
-
-- **etl_pipeline_dag**:
-    - 매일 한 번씩 실행되는 ETL 파이프라인.
-    - PostgreSQL에서 데이터를 읽고 가공하여 분석 테이블로 저장.
+## ⚠️ 트러블슈팅
+자세한 문제 해결 과정은 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)를 참조하세요.

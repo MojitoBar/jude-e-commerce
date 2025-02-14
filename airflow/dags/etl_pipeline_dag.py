@@ -1,12 +1,17 @@
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '../scripts'))
-
-from etl_pipeline import run_etl_script
+from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from datetime import datetime
 
+# 상대 경로로 scripts 디렉토리 추가
+dag_dir = os.path.dirname(os.path.abspath(__file__))
+project_dir = os.path.dirname(dag_dir)
+scripts_dir = os.path.join(project_dir, 'scripts')
+sys.path.append(scripts_dir)
+
+# import 경로 수정
+from etl_pipeline import run_etl_script
 
 default_args = {
     'owner': 'airflow',
@@ -25,7 +30,7 @@ with DAG(
 
     run_etl = PythonOperator(
         task_id='run_etl_pipeline',
-        python_callable=run_etl_script,  # ETL Pipeline의 main() 함수
+        python_callable=run_etl_script,
     )
 
-    run_etl
+    run_etl 
