@@ -34,3 +34,8 @@ airflow/logs/*
 airflow/*.pid
 airflow/*.err
 airflow/*.out
+
+# Environment variables
+.env
+.env.airflow
+.env.postgres

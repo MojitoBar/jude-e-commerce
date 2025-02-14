@@ -33,11 +33,14 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "airflow" ]
-      interval: 10s
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}" ]
+      interval: 5s
       retries: 5
       start_period: 5s
     restart: always
+    env_file:
+      - .env
+      - .env.postgres
 
   airflow-webserver:
     <<: *airflow-common
@@ -46,28 +49,40 @@ services:
       - "8080:8080"
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8080/health" ]
-      interval: 30s
+      interval: 10s
       timeout: 10s
       retries: 5
-      start_period: 30s
     restart: always
     depends_on:
       airflow-init:
         condition: service_completed_successfully
+    env_file:
+      - .env
+      - .env.airflow
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/scripts:/opt/airflow/scripts
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/config:/opt/airflow/config
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./data:/opt/airflow/data
+      - airflow-data:/opt/airflow/airflow-data
 
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
     healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://localhost:8974/health" ]
-      interval: 30s
+      test: [ "CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"' ]
+      interval: 10s
       timeout: 10s
       retries: 5
-      start_period: 30s
     restart: always
     depends_on:
       airflow-init:
         condition: service_completed_successfully
+    env_file:
+      - .env
+      - .env.airflow
 
   airflow-init:
     <<: *airflow-common
@@ -96,6 +111,8 @@ services:
     platform: linux/amd64
     ports:
       - "3000:3000"
+    volumes:
+      - metabase-data:/metabase-data
     environment:
       - MB_DB_TYPE=postgres
       - MB_DB_DBNAME=ecommerce
@@ -104,6 +121,7 @@ services:
       - MB_DB_PASS=airflow
       - MB_DB_HOST=postgres
       - JAVA_TIMEZONE=Asia/Seoul
+      - MB_DB_FILE=/metabase-data/metabase.db
     depends_on:
       - postgres
     healthcheck:
@@ -113,4 +131,6 @@ services:
       retries: 3
 
 volumes:
-  postgres-db-volume:
+  postgres-db-volume: # PostgreSQL 데이터
+  metabase-data: # Metabase 설정 및 데이터
+  airflow-data: # Airflow 데이터
